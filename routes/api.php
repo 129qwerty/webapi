@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::prefix('/admin')->namespace('Admin')->group(function(){
+    Route::match(['get', 'post'], '/', [AdminController::class, 'login']);
+    Route::match(['get', 'post'], '/register', [AdminController::class, 'register']);
+    Route::group(['middleware' => ['auth:admin']], function(){
+        Route::get('/dashboard', [AdminController::class, 'dashboard']);
+    });
 });
